@@ -8,58 +8,70 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SVA Staff Portal">
   <title>SVA Staff Portal</title>
-
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
-
+  <link rel="manifest" href="./manifest.webmanifest?v=3">
+  <link rel="apple-touch-icon" href="./sva-home-icon-v3.png">
+  <link rel="icon" type="image/png" href="./sva-icon-192-v3.png">
   <style>
     *{box-sizing:border-box}
-    html,body{margin:0;width:100%;height:100%;background:#183B5B;font-family:"Times New Roman",serif;overflow:hidden}
-    body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-    #splash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#183B5B;color:#fff}
-    .card{text-align:center;padding:24px;width:min(360px,90vw)}
-    .logo{width:112px;height:112px;border-radius:28px;background:white;padding:8px;object-fit:contain;box-shadow:0 12px 32px rgba(0,0,0,.18)}
-    h1{font-size:25px;margin:18px 0 5px}
-    .sub{opacity:.86;font-size:15px}
-    .spinner{width:38px;height:38px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;margin:22px auto;animation:spin .7s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .status{font-size:13px;line-height:1.45;opacity:.88}
-    .openbtn{display:none;margin:18px auto 0;border:0;border-radius:14px;padding:12px 18px;background:#fff;color:#183B5B;font-family:inherit;font-weight:700;font-size:15px}
+    html,body{margin:0;min-height:100%;font-family:"Times New Roman",serif;background:#183B5B;color:#fff}
+    body{min-height:100vh;padding:env(safe-area-inset-top) 18px env(safe-area-inset-bottom)}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .card{width:min(420px,100%);text-align:center;padding:28px 20px}
+    .logo{width:128px;height:128px;border-radius:29px;object-fit:cover;box-shadow:0 12px 36px rgba(0,0,0,.25)}
+    h1{font-size:28px;margin:18px 0 5px}
+    .sub{font-size:16px;opacity:.88;margin-bottom:26px}
+    .box{text-align:left;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:16px;line-height:1.5}
+    .box b{font-size:17px}
+    .steps{margin:10px 0 0;padding-left:22px}
+    .btn{width:100%;margin-top:18px;border:0;border-radius:14px;padding:13px 16px;background:#fff;color:#183B5B;font:700 16px "Times New Roman",serif}
+    .small{font-size:13px;opacity:.75;margin-top:14px;line-height:1.4}
+    .loading{display:none}
+    @media (display-mode: standalone){
+      .install-only{display:none}
+      .loading{display:block}
+    }
   </style>
 </head>
 <body>
-<div id="splash">
+<div class="wrap">
   <div class="card">
-    <img class="logo" src="./icon-192.png" alt="Sunshine Village Academy">
+    <img class="logo" src="./sva-home-icon-v3.png" alt="SVA">
     <h1>SVA Staff Portal</h1>
     <div class="sub">Sunshine Village Academy</div>
-    <div class="spinner" id="spinner"></div>
-    <div class="status" id="status">Đang mở cổng nhân sự… / Opening staff portal…</div>
-    <button class="openbtn" id="openbtn" onclick="openPortal()">Mở Portal / Open Portal</button>
+
+    <div class="install-only">
+      <div class="box">
+        <b>Cài app trên iPhone / Install on iPhone</b>
+        <ol class="steps">
+          <li>Mở trang này bằng Safari.</li>
+          <li>Bấm Share / Chia sẻ.</li>
+          <li>Chọn Add to Home Screen / Thêm vào Màn hình chính.</li>
+          <li>Kiểm tra preview phải thấy logo SVA rồi bấm Add.</li>
+        </ol>
+      </div>
+      <button class="btn" onclick="location.href='https://script.google.com/macros/s/AKfycbwAgIKID3jpCChbsG4AlGdZjKeqcaJWGhq8O11QYIjioCSOkWS9hu4tl2PyCTVVXTbnnA/exec'">Mở Portal ngay / Open Portal now</button>
+      <div class="small">Trang này cố ý KHÔNG tự chuyển đi khi mở trong Safari để iPhone lấy đúng icon SVA. Khi mở từ icon Home Screen, app sẽ tự vào Portal.</div>
+    </div>
+
+    <div class="loading">
+      <div class="box" style="text-align:center">
+        <b>Đang mở SVA Staff Portal…</b><br>
+        Opening staff portal…
+      </div>
+    </div>
   </div>
 </div>
 
-<script src="./config.js"></script>
 <script>
-  function openPortal() {
-    window.location.replace(window.SVA_CONFIG.PORTAL_URL);
+(function(){
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (standalone) {
+    setTimeout(() => location.replace('https://script.google.com/macros/s/AKfycbwAgIKID3jpCChbsG4AlGdZjKeqcaJWGhq8O11QYIjioCSOkWS9hu4tl2PyCTVVXTbnnA/exec'), 450);
   }
-
-  // iframe was unreliable on iOS/Apps Script. Redirect is much more reliable.
-  setTimeout(openPortal, 650);
-
-  // Fallback if iOS blocks the automatic cross-origin navigation for any reason.
-  setTimeout(() => {
-    document.getElementById('spinner').style.display='none';
-    document.getElementById('status').textContent='Nếu chưa chuyển sang Portal, bấm nút bên dưới. / If the Portal did not open, tap below.';
-    document.getElementById('openbtn').style.display='block';
-  }, 5000);
-
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    navigator.serviceWorker.register('./sw.js?v=3').catch(()=>{});
   }
+})();
 </script>
 </body>
 </html>
